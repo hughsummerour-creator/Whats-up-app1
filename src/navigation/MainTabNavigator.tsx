@@ -1,7 +1,10 @@
 import React from 'react';
-import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { MainTabParamList } from './types';
+import { Icon, iconColors, type IconName } from '@/components/Icon';
+import { ProfileAvatar } from '@/components/ProfileAvatar';
+import { useProfileStore } from '@/stores';
+import { mockUser } from '@/utils/mockData';
 
 // Feature screens
 import { HomeScreen } from '@/features/feed';
@@ -11,29 +14,26 @@ import { ProfileScreen } from '@/features/profile';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
-// Tab icon component
-const TabIcon = ({ name, focused }: { name: string; focused: boolean }) => {
-  const getIcon = () => {
-    switch (name) {
-      case 'Home':
-        return focused ? '🏠' : '🏡';
-      case 'Explore':
-        return '🔍';
-      case 'Map':
-        return '🗺️';
-      case 'Saved':
-        return focused ? '❤️' : '🤍';
-      case 'Profile':
-        return '👤';
-      default:
-        return '•';
-    }
-  };
+// Map tab names to icon names
+const tabIcons: Record<keyof MainTabParamList, IconName> = {
+  Map: 'map',
+  Explore: 'search',
+  Home: 'home',
+  Saved: 'heart',
+  Profile: 'user',
+};
 
+// Reactive Profile Tab Icon Component - This will update when store changes!
+const ProfileTabIcon = () => {
+  const { profileImageUri } = useProfileStore();
+  const displayImage = profileImageUri || mockUser.avatarUrl;
+  
   return (
-    <View className="items-center justify-center">
-      <Text style={{ fontSize: 22, opacity: focused ? 1 : 0.6 }}>{getIcon()}</Text>
-    </View>
+    <ProfileAvatar
+      uri={displayImage}
+      size={24}
+      editable={false}
+    />
   );
 };
 
@@ -43,9 +43,21 @@ export const MainTabNavigator = () => {
       initialRouteName="Home"
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarIcon: ({ focused }) => <TabIcon name={route.name} focused={focused} />,
-        tabBarActiveTintColor: '#e25c50',
-        tabBarInactiveTintColor: '#9ca3af',
+        tabBarIcon: ({ focused }) => {
+          // Show profile photo for Profile tab, icons for others
+          if (route.name === 'Profile') {
+            return <ProfileTabIcon />;
+          }
+          return (
+            <Icon
+              name={tabIcons[route.name]}
+              size={24}
+              color={focused ? iconColors.active : iconColors.default}
+            />
+          );
+        },
+        tabBarActiveTintColor: iconColors.active,
+        tabBarInactiveTintColor: iconColors.default,
         tabBarStyle: {
           backgroundColor: '#ffffff',
           borderTopColor: '#f3f4f6',
@@ -56,37 +68,17 @@ export const MainTabNavigator = () => {
         },
         tabBarLabelStyle: {
           fontSize: 11,
-          fontWeight: '600',
-          marginTop: -4,
+          fontWeight: '500',
+          marginTop: -2,
         },
-        tabBarShowLabel: true,
+        tabBarShowLabel: false,
       })}
     >
-      <Tab.Screen 
-        name="Map" 
-        component={MapScreen}
-        options={{ tabBarLabel: 'Map' }}
-      />
-      <Tab.Screen 
-        name="Explore" 
-        component={ExploreScreen}
-        options={{ tabBarLabel: 'Explore' }}
-      />
-      <Tab.Screen 
-        name="Home" 
-        component={HomeScreen}
-        options={{ tabBarLabel: 'Home' }}
-      />
-      <Tab.Screen 
-        name="Saved" 
-        component={SavedScreen}
-        options={{ tabBarLabel: 'Saved' }}
-      />
-      <Tab.Screen 
-        name="Profile" 
-        component={ProfileScreen}
-        options={{ tabBarLabel: 'Profile' }}
-      />
+      <Tab.Screen name="Map" component={MapScreen} />
+      <Tab.Screen name="Explore" component={ExploreScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Saved" component={SavedScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
 };

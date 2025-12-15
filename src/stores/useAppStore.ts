@@ -26,3 +26,5 @@ export const useAppStore = create<AppState>((set) => ({
   setLastLocation: (lastLocation) => set({ lastLocation }),
 }));
 
+
+

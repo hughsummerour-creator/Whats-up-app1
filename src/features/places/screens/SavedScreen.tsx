@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
+import { Icon, iconColors } from '@/components/Icon';
 import { mockPlaces } from '@/utils/mockData';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -21,8 +22,11 @@ export const SavedScreen = () => {
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       {/* Header */}
-      <View className="px-4 py-3 border-b border-gray-100">
+      <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-100">
         <Text className="text-2xl font-bold text-gray-900">Saved</Text>
+        <TouchableOpacity>
+          <Icon name="plus" size={24} color={iconColors.active} />
+        </TouchableOpacity>
       </View>
 
       {/* Tabs */}
@@ -59,44 +63,57 @@ export const SavedScreen = () => {
               className="mb-4"
               style={{ width: CARD_WIDTH }}
             >
-              <Image
-                source={{ uri: place.imageUrls[0] }}
-                style={{ width: CARD_WIDTH, height: CARD_WIDTH, borderRadius: 12 }}
-                contentFit="cover"
-              />
+              <View className="relative">
+                <Image
+                  source={{ uri: place.imageUrls[0] }}
+                  style={{ width: CARD_WIDTH, height: CARD_WIDTH, borderRadius: 12 }}
+                  contentFit="cover"
+                />
+                <TouchableOpacity className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full">
+                  <Icon name="bookmark" size={16} color={iconColors.active} />
+                </TouchableOpacity>
+              </View>
               <View className="mt-2">
                 <Text className="font-semibold text-gray-900" numberOfLines={1}>
                   {place.name}
                 </Text>
                 <View className="flex-row items-center mt-1">
-                  <Text className="text-sm text-gray-500">{place.location.city}</Text>
+                  <Icon name="map-pin" size={12} color={iconColors.default} />
+                  <Text className="text-sm text-gray-500 ml-1">{place.location.city}</Text>
                   <Text className="mx-1 text-gray-300">•</Text>
-                  <Text className="text-sm text-gray-500">⭐ {place.rating}</Text>
+                  <Icon name="star" size={12} color="#FBBF24" />
+                  <Text className="text-sm text-gray-500 ml-1">{place.rating}</Text>
                 </View>
               </View>
             </TouchableOpacity>
           ))}
 
-          {/* Duplicate for more content */}
           {mockPlaces.map((place) => (
             <TouchableOpacity
               key={`${place.id}-2`}
               className="mb-4"
               style={{ width: CARD_WIDTH }}
             >
-              <Image
-                source={{ uri: place.imageUrls[0] }}
-                style={{ width: CARD_WIDTH, height: CARD_WIDTH, borderRadius: 12 }}
-                contentFit="cover"
-              />
+              <View className="relative">
+                <Image
+                  source={{ uri: place.imageUrls[0] }}
+                  style={{ width: CARD_WIDTH, height: CARD_WIDTH, borderRadius: 12 }}
+                  contentFit="cover"
+                />
+                <TouchableOpacity className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full">
+                  <Icon name="bookmark" size={16} color={iconColors.active} />
+                </TouchableOpacity>
+              </View>
               <View className="mt-2">
                 <Text className="font-semibold text-gray-900" numberOfLines={1}>
                   {place.name}
                 </Text>
                 <View className="flex-row items-center mt-1">
-                  <Text className="text-sm text-gray-500">{place.location.city}</Text>
+                  <Icon name="map-pin" size={12} color={iconColors.default} />
+                  <Text className="text-sm text-gray-500 ml-1">{place.location.city}</Text>
                   <Text className="mx-1 text-gray-300">•</Text>
-                  <Text className="text-sm text-gray-500">⭐ {place.rating}</Text>
+                  <Icon name="star" size={12} color="#FBBF24" />
+                  <Text className="text-sm text-gray-500 ml-1">{place.rating}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -106,4 +123,3 @@ export const SavedScreen = () => {
     </SafeAreaView>
   );
 };
-

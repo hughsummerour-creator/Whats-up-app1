@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, TouchableOpacity, Text } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import { Icon, iconColors, type IconName } from '@/components/Icon';
 
 export type ProfileTabType = 'grid' | 'saved' | 'tagged';
 
@@ -8,13 +9,13 @@ interface ProfileTabsProps {
   onTabChange: (tab: ProfileTabType) => void;
 }
 
-export const ProfileTabs = ({ activeTab, onTabChange }: ProfileTabsProps) => {
-  const tabs: { key: ProfileTabType; icon: string; label: string }[] = [
-    { key: 'grid', icon: '▦', label: 'Posts' },
-    { key: 'saved', icon: '🔖', label: 'Saved' },
-    { key: 'tagged', icon: '👤', label: 'Tagged' },
-  ];
+const tabs: { key: ProfileTabType; icon: IconName }[] = [
+  { key: 'grid', icon: 'grid' },
+  { key: 'saved', icon: 'bookmark' },
+  { key: 'tagged', icon: 'user' },
+];
 
+export const ProfileTabs = ({ activeTab, onTabChange }: ProfileTabsProps) => {
   return (
     <View className="flex-row bg-white border-b border-gray-200">
       {tabs.map((tab) => (
@@ -25,16 +26,13 @@ export const ProfileTabs = ({ activeTab, onTabChange }: ProfileTabsProps) => {
             activeTab === tab.key ? 'border-gray-900' : 'border-transparent'
           }`}
         >
-          <Text
-            className={`text-lg ${
-              activeTab === tab.key ? 'opacity-100' : 'opacity-40'
-            }`}
-          >
-            {tab.icon}
-          </Text>
+          <Icon
+            name={tab.icon}
+            size={22}
+            color={activeTab === tab.key ? iconColors.active : iconColors.default}
+          />
         </TouchableOpacity>
       ))}
     </View>
   );
 };
-

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Image } from 'expo-image';
+import { Icon, iconColors } from '@/components/Icon';
 
 interface Highlight {
   id: string;
@@ -28,14 +29,14 @@ export const ProfileHighlights = ({
       className="bg-white py-4 border-b border-gray-100"
       contentContainerStyle={{ paddingHorizontal: 16 }}
     >
-      {/* Add New Highlight Button (only for own profile) */}
+      {/* Add New Highlight Button */}
       {isOwnProfile && (
         <TouchableOpacity
           onPress={onAddHighlight}
           className="items-center mr-4"
         >
           <View className="w-16 h-16 rounded-full border-2 border-dashed border-gray-300 items-center justify-center bg-gray-50">
-            <Text className="text-2xl text-gray-400">+</Text>
+            <Icon name="plus" size={24} color={iconColors.default} />
           </View>
           <Text className="text-xs text-gray-500 mt-1">New</Text>
         </TouchableOpacity>
@@ -63,4 +64,3 @@ export const ProfileHighlights = ({
     </ScrollView>
   );
 };
-

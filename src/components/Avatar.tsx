@@ -74,3 +74,5 @@ export const Avatar = ({ uri, name, size = 'md', className = '' }: AvatarProps) 
   );
 };
 
+
+

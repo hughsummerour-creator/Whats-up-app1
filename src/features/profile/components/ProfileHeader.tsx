@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { Image } from 'expo-image';
+import { Icon, iconColors } from '@/components/Icon';
+import { ProfileAvatar } from '@/components/ProfileAvatar';
+import { useProfileStore } from '@/stores';
 import type { User } from '@/types';
 import { formatNumber } from '@/utils/mockData';
 
@@ -21,16 +23,22 @@ export const ProfileHeader = ({
   onMessage,
   onSettings,
 }: ProfileHeaderProps) => {
+  const { profileImageUri, setProfileImage } = useProfileStore();
+  
+  // Use uploaded image if available, otherwise use user's avatarUrl
+  const displayImage = profileImageUri || user.avatarUrl;
+
   return (
     <View className="bg-white px-4 pt-2 pb-4">
       {/* Top Row: Avatar + Stats */}
       <View className="flex-row items-center mb-4">
-        {/* Avatar */}
+        {/* Avatar - Clickable if own profile */}
         <View className="mr-6">
-          <Image
-            source={{ uri: user.avatarUrl }}
-            className="w-20 h-20 rounded-full bg-gray-200"
-            contentFit="cover"
+          <ProfileAvatar
+            uri={displayImage}
+            size={80}
+            editable={isOwnProfile}
+            onImageSelected={(uri) => setProfileImage(uri || null)}
           />
         </View>
 
@@ -62,16 +70,16 @@ export const ProfileHeader = ({
             </TouchableOpacity>
             <TouchableOpacity
               onPress={onSettings}
-              className="bg-gray-100 px-4 py-2 rounded-lg items-center"
+              className="bg-gray-100 px-4 py-2 rounded-lg items-center justify-center"
             >
-              <Text className="text-lg">⚙️</Text>
+              <Icon name="settings" size={18} color={iconColors.active} />
             </TouchableOpacity>
           </>
         ) : (
           <>
             <TouchableOpacity
               onPress={onFollow}
-              className="flex-1 bg-primary-500 py-2 rounded-lg items-center"
+              className="flex-1 bg-gray-900 py-2 rounded-lg items-center"
             >
               <Text className="font-semibold text-white">Follow</Text>
             </TouchableOpacity>
@@ -88,7 +96,6 @@ export const ProfileHeader = ({
   );
 };
 
-// Stat Item Component
 const StatItem = ({ value, label }: { value: number; label: string }) => (
   <TouchableOpacity className="items-center">
     <Text className="text-lg font-bold text-gray-900">{formatNumber(value)}</Text>
@@ -96,6 +103,4 @@ const StatItem = ({ value, label }: { value: number; label: string }) => (
   </TouchableOpacity>
 );
 
-// Placeholder post count
 const mockPostCount = 47;
-

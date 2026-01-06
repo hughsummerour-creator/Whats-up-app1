@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { View, Text, TouchableOpacity, ScrollView, TextInput, Dimensions, ActivityIndicator, Alert, Modal, Linking } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import MapView, { Marker, Region, PROVIDER_DEFAULT } from 'react-native-maps';
+import MapView, { Marker, Region, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Image } from 'expo-image';
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -35,35 +35,43 @@ const getCategoryColor = (category: string): string => {
   return categoryColors[category] || categoryColors.default;
 };
 
-// Category Icon Component
-const CategoryIcon = ({ category, size = 16 }: { category: string; size?: number }) => {
+// Category Icon Component - shared between map markers, event chips, and legend buttons
+const CategoryIcon = ({
+  category,
+  size = 16,
+  color = '#FFFFFF',
+}: {
+  category: string;
+  size?: number;
+  color?: string;
+}) => {
   switch (category) {
     case 'bar':
     case 'club':
-      return <MaterialCommunityIcons name="glass-cocktail" size={size} color="#FFFFFF" />;
+      return <MaterialCommunityIcons name="glass-cocktail" size={size} color={color} />;
     case 'restaurant':
-      return <MaterialCommunityIcons name="silverware-fork-knife" size={size} color="#FFFFFF" />;
+      return <MaterialCommunityIcons name="silverware-fork-knife" size={size} color={color} />;
     case 'cafe':
     case 'coffee':
-      return <Feather name="coffee" size={size} color="#FFFFFF" />;
+      return <Feather name="coffee" size={size} color={color} />;
     case 'event':
     case 'music':
-      return <Feather name="music" size={size} color="#FFFFFF" />;
+      return <Feather name="music" size={size} color={color} />;
     case 'museum':
     case 'gallery':
-      return <MaterialCommunityIcons name="palette" size={size} color="#FFFFFF" />;
+      return <MaterialCommunityIcons name="palette" size={size} color={color} />;
     case 'park':
-      return <Feather name="sun" size={size} color="#FFFFFF" />;
+      return <Feather name="sun" size={size} color={color} />;
     case 'hotel':
-      return <MaterialCommunityIcons name="bed" size={size} color="#FFFFFF" />;
+      return <MaterialCommunityIcons name="bed" size={size} color={color} />;
     case 'shopping':
-      return <Feather name="shopping-bag" size={size} color="#FFFFFF" />;
+      return <Feather name="shopping-bag" size={size} color={color} />;
     case 'spa':
-      return <MaterialCommunityIcons name="spa" size={size} color="#FFFFFF" />;
+      return <MaterialCommunityIcons name="spa" size={size} color={color} />;
     case 'gym':
-      return <MaterialCommunityIcons name="dumbbell" size={size} color="#FFFFFF" />;
+      return <MaterialCommunityIcons name="dumbbell" size={size} color={color} />;
     default:
-      return <Feather name="map-pin" size={size} color="#FFFFFF" />;
+      return <Feather name="map-pin" size={size} color={color} />;
   }
 };
 
@@ -514,15 +522,21 @@ const WhatsHappeningSheet = ({
   );
 };
 
-// Legend item
+// Legend item as a modern, pill-shaped button with category icon (UI-only for now)
 const LegendItem = ({ category, label }: { category: string; label: string }) => (
-  <View className="flex-row items-center mr-4">
-    <View
-      className="w-3 h-3 rounded-full mr-1.5"
-      style={{ backgroundColor: getCategoryColor(category) }}
-    />
-    <Text className="text-xs text-gray-600">{label}</Text>
-  </View>
+  <TouchableOpacity
+    activeOpacity={0.85}
+    className="flex-row items-center mr-2 px-3 py-1.5 rounded-full bg-white/95 border border-gray-100"
+  >
+    <View className="mr-1.5">
+      <CategoryIcon
+        category={category}
+        size={14}
+        color={getCategoryColor(category)}
+      />
+    </View>
+    <Text className="text-xs text-gray-700">{label}</Text>
+  </TouchableOpacity>
 );
 
 export const MapScreen = () => {
@@ -633,7 +647,7 @@ export const MapScreen = () => {
       <View className="flex-1 relative">
         <MapView
           ref={mapRef}
-          provider={PROVIDER_DEFAULT}
+          provider={PROVIDER_GOOGLE}
           style={{ flex: 1 }}
           region={region}
           onRegionChangeComplete={setRegion}

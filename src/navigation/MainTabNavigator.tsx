@@ -18,7 +18,7 @@ const Tab = createBottomTabNavigator<MainTabParamList>();
 const tabIcons: Record<keyof MainTabParamList, IconName> = {
   Map: 'map',
   Explore: 'search',
-  Home: 'home',
+  Home: 'message-circle',
   Saved: 'heart',
   Profile: 'user',
 };
